@@ -1,5 +1,6 @@
 package com.example.smtv;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
@@ -9,6 +10,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.FragmentActivity;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.leanback.app.BrowseSupportFragment;
@@ -18,9 +20,12 @@ import androidx.leanback.widget.HeaderItem;
 import androidx.leanback.widget.ImageCardView;
 import androidx.leanback.widget.ListRow;
 import androidx.leanback.widget.ListRowPresenter;
+import androidx.leanback.widget.OnItemViewClickedListener;
 import androidx.leanback.widget.Presenter;
+import androidx.leanback.widget.Row;
+import androidx.leanback.widget.RowPresenter;
 
-public class MainFragment extends BrowseSupportFragment {
+public class MainFragment extends BrowseSupportFragment implements OnItemViewClickedListener {
     private Object SingleRowView;
 
     @Override
@@ -30,10 +35,10 @@ public class MainFragment extends BrowseSupportFragment {
             setUI();
         }
         private void setUI(){
-
             setTitle("Supreme Master TV");
             setBrandColor(Color.BLUE);
             loadRows();
+            setOnItemViewClickedListener(this::onItemClicked);
         }
         private void loadRows(){
             HeaderItem category1 = new HeaderItem("Live shows");
@@ -41,11 +46,21 @@ public class MainFragment extends BrowseSupportFragment {
             ArrayObjectAdapter adapterForRow1 = new ArrayObjectAdapter(new MyPresenter());
             String name;
 
-            adapterForRow1.add(new SingleRowView("Noteworthy News",getContext().getResources().getDrawable(R.drawable.nwn)));
-            adapterForRow1.add(new SingleRowView("Veggie Elite",getContext().getResources().getDrawable(R.drawable.veg_elite)));
+            adapterForRow1.add(new SingleRowView("Noteworthy News",ResourcesCompat.getDrawable(getResources(), R.drawable.nwn, null)));
+            adapterForRow1.add(new SingleRowView("Veggie Elite", ResourcesCompat.getDrawable(getResources(), R.drawable.veg_elite, null)));
             ArrayObjectAdapter windowAdapter = new ArrayObjectAdapter(new ListRowPresenter());
             windowAdapter.add(new ListRow(category1, adapterForRow1));
             setAdapter(windowAdapter);
+
+    }
+
+    @Override
+    public void onItemClicked(Presenter.ViewHolder viewHolder, Object o, RowPresenter.ViewHolder viewHolder1, Row row) {
+
+        Intent intent = new Intent(getActivity(),DetailsActivity.class);
+
+        startActivity(intent);
+
 
     }
         private class MyPresenter extends Presenter{
